@@ -116,7 +116,8 @@ if __name__ == '__main__':
 	if len(sys.argv) != 2:
 		print("You didn't give the correct arguments! Try python kakuro.py puzzle_file")
 	else:
-		puzzle_file = open("./Puzzles/" + sys.argv[1],'r')
+		#puzzle_file = open("./Puzzles/" + sys.argv[1],'r')
+		puzzle_file = open(sys.argv[1],'r')
 		lines = puzzle_file.readlines()
 		puzzle_file.close()
 
