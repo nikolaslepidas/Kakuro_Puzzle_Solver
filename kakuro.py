@@ -90,24 +90,22 @@ class Kakuro(CSP):
 								values.append(*self.curr_domains[var])
 							else:
 								noValueCounter += 1
-				
-				if(noValueCounter > 0):
-					sum = 0
-					for value in values:
-						sum += value
-					if sum <= result:
-						return True
+					if(noValueCounter > 0):
+						sum = 0
+						for value in values:
+							sum += value
+						if sum <= result:
+							return True
+						else:
+							return False
 					else:
-						return False
-				else:
-					sum = 0
-					for value in values:
-						sum += value
-					if sum == result:
-						return True
-					else:
-						return False
-
+						sum = 0
+						for value in values:
+							sum += value
+						if sum == result:
+							return True
+						else:
+							return False
 
 
 
@@ -129,7 +127,7 @@ if __name__ == '__main__':
 
 		for i in range(2, len(lines)):
 			x = ast.literal_eval(lines[i])
-			if (len(x) == 2):
+			if (len(x) == 2 and type(x[0]) is list):
 				vars_result.append(x)
 			else:
 				temp_black.append(x)
