@@ -8,12 +8,6 @@ import ast
 
 """ We are using python 3 """
 
-def add(numbers):
-	sum = 0
-	for n in numbers:
-		sum += n
-	return sum
-	
 class Kakuro(CSP):
 
 	def __init__(self, rows, columns, vars_result, black_boxes):
@@ -27,7 +21,7 @@ class Kakuro(CSP):
 		variables = []
 		for row in range(rows):
 			for column in range(columns):
-				var = "X%d%d" % (row,column)
+				var = "X" + str(row) + str(column)
 				if (var not in black_boxes):
 					variables.append(var)		
 		#print("variables")
@@ -42,7 +36,7 @@ class Kakuro(CSP):
 			neighbors[var] = [ ]
 			for row in range(rows):
 				for column in range(columns):
-					neighbor = "X%d%d" % (row,column)
+					neighbor = "X" + str(row) + str(column)
 					if (neighbor != var) and (neighbor not in black_boxes) and (var_row == row or var_column == column):
 						neighbors[var].append(neighbor)
 		"""
@@ -54,21 +48,16 @@ class Kakuro(CSP):
 		CSP.__init__(self, variables, domains, neighbors, self.constraints)
 
 	def constraints(self, A, a, B, b):
-		
-		if (A[1] == B[1] or A[2] == B[2]):
-			flag = 0
-			for l in self.vars_result:
-				if ((A in l[0]) and (B in l[0])):
-					flag = 1
-			if a == b and flag == 1:
-				return False
-		
+		#if values are the same then we have to return False because this is forbidden
+		if a == b:
+			return False
+
 		noValueCounter 	= 0
 		values 			= []
 		values.append(a)
 		values.append(b)
 
-		for list_item in self.vars_result:
+		for list_item in self.vars_result:	#for every constraint in list of constraints
 			variables 	= list_item[0]
 			result 		= list_item[1]
 			
@@ -90,12 +79,14 @@ class Kakuro(CSP):
 								values.append(*self.curr_domains[var])
 							else:
 								noValueCounter += 1
-					if(noValueCounter > 0):
+
+					if(noValueCounter > 0):		#if there are values for the constraint that are empty
 						sum = 0
 						for value in values:
 							sum += value
-						if sum <= result:
-							return True
+						if sum <= result:		#we have just to check if sum <= result
+							return True			#because if sum > result then we know for sure that the constraint
+												#is not satisfied
 						else:
 							return False
 					else:
@@ -106,7 +97,7 @@ class Kakuro(CSP):
 							return True
 						else:
 							return False
-
+		return True
 
 
 if __name__ == '__main__':
