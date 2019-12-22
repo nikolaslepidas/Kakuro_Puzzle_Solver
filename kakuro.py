@@ -9,14 +9,13 @@ import ast
 """ We are using python 3 """
 
 class Kakuro(CSP):
-
 	def __init__(self, rows, columns, vars_result, black_boxes):
 		"""Constructor of Kakuro instance"""
 		self.rows 			= rows
 		self.columns 		= columns
 		self.vars_result 	= vars_result
 		self.black_vars 	= black_boxes
-		
+		#print(vars_result)
 		#Take variables 
 		variables = []
 		for row in range(rows):
@@ -34,11 +33,15 @@ class Kakuro(CSP):
 			var_column = int(var[2])
 			domains[var] = [n + 1 for n in range(9)]
 			neighbors[var] = [ ]
+			#print("var == " +var)
 			for row in range(rows):
 				for column in range(columns):
 					neighbor = "X" + str(row) + str(column)
 					if (neighbor != var) and (neighbor not in black_boxes) and (var_row == row or var_column == column):
-						neighbors[var].append(neighbor)
+						for constraint in vars_result:
+							if var in constraint[0] and neighbor in constraint[0]:
+								neighbors[var].append(neighbor)
+								break
 		"""
 		for val in variables:
 			print("neighbors[val]")
@@ -48,10 +51,6 @@ class Kakuro(CSP):
 		CSP.__init__(self, variables, domains, neighbors, self.constraints)
 
 	def constraints(self, A, a, B, b):
-		#if values are the same then we have to return False because this is forbidden
-		if a == b:
-			return False
-
 		noValueCounter 	= 0
 		values 			= []
 		values.append(a)
@@ -63,7 +62,9 @@ class Kakuro(CSP):
 			
 			#if we find the constrain that the two variables exist together
 			if A in variables and B in variables:
-				if len(variables) == 2: #if the constraint has only these two variables
+				if a == b:				#variables in the same constraint can't take the same
+					return False
+				elif len(variables) == 2: #if the constraint has only these two variables
 					if a+b == result:
 						return True
 					else:
@@ -97,24 +98,23 @@ class Kakuro(CSP):
 							return True
 						else:
 							return False
-		return True
 
 
 if __name__ == '__main__':
 
 	if len(sys.argv) != 2:
-		print("You didn't give the correct arguments! Try python kakuro.py puzzle_file")
+		print("You didn't give the correct arguments! Try: python kakuro.py puzzle_file")
 	else:
 		#puzzle_file = open("./Puzzles/" + sys.argv[1],'r')
 		puzzle_file = open(sys.argv[1],'r')
 		lines = puzzle_file.readlines()
 		puzzle_file.close()
 
-		rows = int(lines[0])
+		rows 	= int(lines[0])
 		columns = int(lines[1])
 
 		vars_result = []
-		temp_black = []
+		temp_black 	= []
 
 		for i in range(2, len(lines)):
 			x = ast.literal_eval(lines[i])
@@ -130,42 +130,36 @@ if __name__ == '__main__':
 
 		#print("black_boxes")
 		#print(black_boxes)
+		kakuro = Kakuro(rows,columns,vars_result,black_boxes)
+		current_milli_time = lambda: int(round(time.time() * 1000))
 
-		print("-->BT")
-		BT = Kakuro(rows,columns,vars_result,black_boxes)
-		start = int(round(time.time()*1000))
-		result_BT = csp.backtracking_search(BT)
-		end = int(round(time.time()*1000))
-		print("Solved with BT in %d mseconds with %d assignments.\n" % (end - start, BT.nassigns))
-		
+		start 		= current_milli_time()
+		result_BT 	= csp.backtracking_search(kakuro)
+		end 		= current_milli_time()
+		print("Solving kakuro puzzle with BT in %d milliseconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
 
-		print("-->FC")
-		FC = Kakuro(rows,columns,vars_result,black_boxes)
-		start = int(round(time.time()*1000))
-		result_FC = csp.backtracking_search(FC, inference=csp.forward_checking)
-		end = int(round(time.time()*1000))
-		print("Solved with FC in %d mseconds with %d assignments.\n" % (end - start, FC.nassigns))
+		start 		= current_milli_time()
+		result_FC 	= csp.backtracking_search(kakuro, inference=csp.forward_checking)
+		end 		= current_milli_time()
+		print("Solving kakuro puzzle with FC in %d milliseconds with %d assignments.\n" % ((end - start), kakuro.nassigns))
 
-		print("-->FC+MRV")
-		FC_MRV = Kakuro(rows,columns,vars_result,black_boxes)
-		start = int(round(time.time()*1000))
-		result_FCMRV = csp.backtracking_search(FC_MRV, select_unassigned_variable=csp.mrv, inference=csp.forward_checking)
-		end = int(round(time.time()*1000))
-		print("Solved with FC+MRV in %d mseconds with %d assignments.\n" % (end - start, FC_MRV.nassigns))
+		start 			= current_milli_time()
+		result_FC_MRV 	= csp.backtracking_search(kakuro, select_unassigned_variable=csp.mrv, inference=csp.forward_checking)
+		end 			= current_milli_time()
+		print("Solving kakuro puzzle with FC+MRV in %d milliseconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
 
-		print("-->MAC")
-		MAC = Kakuro(rows,columns,vars_result,black_boxes)
-		start = int(round(time.time()*1000))
-		result_MAC = csp.backtracking_search(MAC, inference=csp.mac)
-		end = int(round(time.time()*1000))
-		print("Solved with MAC in %d mseconds with %d assignments.\n" % (end - start, MAC.nassigns))
+		start 		= current_milli_time()
+		result_MAC 	= csp.backtracking_search(kakuro, inference=csp.mac)
+		end 		= current_milli_time()
+		print("Solving kakuro puzzle with MAC in %d milliseconds with %d assignments.\n" % ((end - start), kakuro.nassigns))
 
-		
-		print("\nSollution (--> Variable = Values):\n")
-		for i in range(rows):
-			for j in range(columns):
-				if (result_BT.items()!=None):
-					for (var, val) in result_BT.items():
-						if var == "X%d%d" % (i, j):
+		print("~~~~~~Solution~~~~~~")
+		for row in range(rows):
+			for column in range(columns):
+				if (result_FC != None):
+					for (var, val) in result_FC.items():
+						if var == "X" + str(row) + str(column):
 							print("%s = %d" % (var, val), end = "  ")
+				else:
+					print("Something went really wrong!! Time for debug..")
 			print("")
