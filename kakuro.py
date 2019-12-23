@@ -51,6 +51,9 @@ class Kakuro(CSP):
 		CSP.__init__(self, variables, domains, neighbors, self.constraints)
 
 	def constraints(self, A, a, B, b):
+		if a == b:				#variables in the same constraint can't take the same
+			return False
+
 		noValueCounter 	= 0
 		values 			= []
 		values.append(a)
@@ -62,9 +65,7 @@ class Kakuro(CSP):
 			
 			#if we find the constrain that the two variables exist together
 			if A in variables and B in variables:
-				if a == b:				#variables in the same constraint can't take the same
-					return False
-				elif len(variables) == 2: #if the constraint has only these two variables
+				if len(variables) == 2: #if the constraint has only these two variables
 					if a+b == result:
 						return True
 					else:
@@ -85,7 +86,7 @@ class Kakuro(CSP):
 						sum = 0
 						for value in values:
 							sum += value
-						if sum <= result:		#we have just to check if sum <= result
+						if sum <= result - noValueCounter:		#we have just to check if sum <= result
 							return True			#because if sum > result then we know for sure that the constraint
 												#is not satisfied
 						else:
@@ -131,13 +132,13 @@ if __name__ == '__main__':
 		#print("black_boxes")
 		#print(black_boxes)
 		current_milli_time = lambda: int(round(time.time() * 1000))
-		
+		"""
 		kakuro 		= Kakuro(rows,columns,vars_result,black_boxes)
 		start 		= current_milli_time()
 		result_BT 	= csp.backtracking_search(kakuro)
 		end 		= current_milli_time()
 		print("Solving kakuro puzzle with BT in %d milliseconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
-		
+		"""
 		"""
 		kakuro 			= Kakuro(rows,columns,vars_result,black_boxes)
 		start 			= current_milli_time()
