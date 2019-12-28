@@ -132,7 +132,7 @@ if __name__ == '__main__':
 		#print("black_boxes")
 		#print(black_boxes)
 		#current_milli_time = lambda: int(round(time.time() * 1000))
-		
+		"""
 		kakuro 		= Kakuro(rows,columns,vars_result,black_boxes)
 		start 		= time.time()
 		result_BT 	= csp.backtracking_search(kakuro)
@@ -144,14 +144,24 @@ if __name__ == '__main__':
 		result_BT_LCV	= csp.backtracking_search(kakuro,order_domain_values=csp.lcv)
 		end 			= time.time()
 		print("Solving kakuro puzzle with BT+LCV in %lf seconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
-		
-
+		"""
 		kakuro 		= Kakuro(rows,columns,vars_result,black_boxes)
 		start 		= time.time()
 		result_FC 	= csp.backtracking_search(kakuro, inference=csp.forward_checking)
 		end 		= time.time()
 		print("Solving kakuro puzzle with FC in %lf seconds with %d assignments.\n" % ((end - start), kakuro.nassigns))
-		
+		print("~~~~~~Solution~~~~~~")
+		for row in range(rows):
+			for column in range(columns):
+				if (result_FC != None):
+					for (var, val) in result_FC.items():
+						if var == "X" + str(row) + str(column):
+							print("%s = %d" % (var, val), end = "  ")
+				else:
+					print("Something went really wrong!! Time for debug..")
+			print("")
+		exit(12)
+
 		kakuro 			= Kakuro(rows,columns,vars_result,black_boxes)
 		start 			= time.time()
 		result_FC_MRV 	= csp.backtracking_search(kakuro, select_unassigned_variable=csp.mrv, inference=csp.forward_checking)
