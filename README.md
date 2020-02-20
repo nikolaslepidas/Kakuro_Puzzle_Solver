@@ -5,7 +5,11 @@ More about Kakuro puzzles --> https://en.wikipedia.org/wiki/Kakuro
 
 ## Running
 ```
-python3 kakuro.py
+python3 kakuro.py puzzle.txt
+```
+Example:
+```
+python3 kakuro.py 6x6_easy_619.txt
 ```
 
 ## References
