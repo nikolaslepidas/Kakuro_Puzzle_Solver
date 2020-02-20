@@ -125,11 +125,11 @@ def main():
 
 	
 def run(rows,columns,vars_result,black_boxes):
-	# kakuro 		= Kakuro(rows,columns,vars_result,black_boxes)
-	# start 		= time.time()
-	# result_BT 	= csp.backtracking_search(kakuro)
-	# end 		= time.time()
-	# print("Solving kakuro puzzle with BT in %lf seconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
+	kakuro 		= Kakuro(rows,columns,vars_result,black_boxes)
+	start 		= time.time()
+	result_BT 	= csp.backtracking_search(kakuro)
+	end 		= time.time()
+	print("Solving kakuro puzzle with BT in %lf seconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
 
 	# kakuro 			= Kakuro(rows,columns,vars_result,black_boxes)
 	# start 			= time.time()
@@ -155,11 +155,11 @@ def run(rows,columns,vars_result,black_boxes):
 	# end 			= time.time()
 	# print("Solving kakuro puzzle with FC+LCV in %lf seconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
 
-	kakuro 				= Kakuro(rows,columns,vars_result,black_boxes)
-	start 				= time.time()
-	result_FC_MRV_LCV 	= csp.backtracking_search(kakuro, order_domain_values=csp.lcv, select_unassigned_variable=csp.mrv, inference=csp.forward_checking)
-	end 				= time.time()
-	print("Solving kakuro puzzle with FC+MRV+LCV in %lf seconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
+	# kakuro 				= Kakuro(rows,columns,vars_result,black_boxes)
+	# start 				= time.time()
+	# result_FC_MRV_LCV 	= csp.backtracking_search(kakuro, order_domain_values=csp.lcv, select_unassigned_variable=csp.mrv, inference=csp.forward_checking)
+	# end 				= time.time()
+	# print("Solving kakuro puzzle with FC+MRV+LCV in %lf seconds and %d assignments.\n" % ((end - start), kakuro.nassigns))
 
 	kakuro 		= Kakuro(rows,columns,vars_result,black_boxes)
 	start 		= time.time()
